@@ -31,10 +31,11 @@ Light and dark interfaces, both holding onto the same premium, minimal sci-fi fe
 ⚙️ Configurable core
 Bring your own Azure OpenAI endpoint, API key, and deployment name, with optional live web search — built to be extensible, not locked down.
 
-Built alongside Gaurav Keshari.
+Built alongside  Mohammed Ayan Rafiq and Gaurav Keshari.
 
 This has been months of iterating — fixing a broken API layer, redesigning the UI more than once, rebuilding features that didn't work the first time. And it's still growing — deeper automation and true agentic capabilities are next.
 
 Would love to hear your thoughts — what would you want an AI assistant like this to actually do for you?
-
+mail:ayanimranrafiq@gmail.com
+phone:+91 9742515282 (IND)
 #ArtificialIntelligence #AI #BuildInPublic #JARVIS #IronMan #IndieHacker #SoftwareDevelopment #Innovation #TechProjects #WebDevelopment
