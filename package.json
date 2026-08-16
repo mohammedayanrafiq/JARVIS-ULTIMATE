@@ -1,0 +1,20 @@
+{
+  "name": "jarvis-desktop",
+  "version": "1.0.0",
+  "description": "J.A.R.V.I.S — AI Desktop Assistant",
+  "main": "main.js",
+  "scripts": {
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "author": "Irfan",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@tauri-apps/api": "^2.2.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.2.0"
+  }
+}
