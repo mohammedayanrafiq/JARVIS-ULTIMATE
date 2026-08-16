@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.A.R.V.I.S Orb</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: transparent !important;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    /* Orb Wrapper with Tauri drag region */
+    .orb-container {
+      width: 68px;
+      height: 68px;
+      position: relative;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .orb-container:active {
+      cursor: grabbing;
+      transform: scale(0.95);
+    }
+
+    /* Glowing Outer Ring */
+    .orb-glow {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 210, 255, 0.4) 0%, rgba(0, 110, 255, 0.15) 50%, transparent 75%);
+      filter: blur(6px);
+      animation: pulseGlow 3s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    /* Inner Rotating Particle Ring */
+    .orb-ring {
+      position: absolute;
+      inset: 2px;
+      border-radius: 50%;
+      border: 2px dashed rgba(0, 220, 255, 0.6);
+      box-shadow: 0 0 12px rgba(0, 200, 255, 0.5);
+      animation: rotateRing 12s linear infinite;
+      pointer-events: none;
+    }
+
+    /* Core Logo Image */
+    .orb-core {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #08203e 0%, #000000 100%);
+      box-shadow: inset 0 0 15px rgba(0, 220, 255, 0.8), 0 0 18px rgba(0, 180, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+    }
+
+    .orb-core img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.9));
+      transition: filter 0.3s ease;
+    }
+
+    /* Active Listening Pulse State */
+    .orb-container.listening .orb-glow {
+      background: radial-gradient(circle, rgba(0, 255, 180, 0.7) 0%, rgba(0, 200, 255, 0.4) 50%, transparent 80%);
+      filter: blur(8px);
+      animation: listeningPulse 0.8s ease-in-out infinite alternate;
+    }
+    .orb-container.listening .orb-ring {
+      border-color: rgba(0, 255, 200, 0.9);
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.8);
+      animation: rotateRing 3s linear infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.98); opacity: 0.7; }
+      100% { transform: scale(1.1); opacity: 1.0; }
+    }
+
+    @keyframes listeningPulse {
+      0% { transform: scale(1.0); opacity: 0.8; }
+      100% { transform: scale(1.25); opacity: 1.0; }
+    }
+
+    @keyframes rotateRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb-container" id="orb" data-tauri-drag-region title="J.A.R.V.I.S Desktop Floating Assistant">
+    <div class="orb-glow"></div>
+    <div class="orb-ring"></div>
+    <div class="orb-core" data-tauri-drag-region>
+      <img src="../assets/logo.png" alt="JARVIS Orb" onerror="this.src='../assets/icon.png';" data-tauri-drag-region>
+    </div>
+  </div>
+
+  <script>
+    const orb = document.getElementById('orb');
+
+    // Click handler to toggle main JARVIS chat window
+    orb.addEventListener('click', async (e) => {
+      if (window.__TAURI__) {
+        try {
+          await window.__TAURI__.core.invoke('toggle_main_window');
+        } catch (err) {
+          console.error('Failed to toggle main window:', err);
+        }
+      }
+    });
+
+    // Listen for wake-word or listening state events from Rust backend
+    if (window.__TAURI__) {
+      window.__TAURI__.event.listen('listening-state', (event) => {
+        if (event.payload && event.payload.active) {
+          orb.classList.add('listening');
+        } else {
+          orb.classList.remove('listening');
+        }
+      });
+
+      window.__TAURI__.event.listen('wake-word-detected', () => {
+        orb.classList.add('listening');
+        setTimeout(() => orb.classList.remove('listening'), 3000);
+      });
+
+      // Track window movement and persist orb position
+      let moveTimeout;
+      window.addEventListener('mouseup', () => {
+        clearTimeout(moveTimeout);
+        moveTimeout = setTimeout(async () => {
+          try {
+            const appWindow = window.__TAURI__.window.getCurrentWindow();
+            const pos = await appWindow.outerPosition();
+            await window.__TAURI__.core.invoke('save_orb_position', { x: pos.x, y: pos.y });
+          } catch(e) {
+            console.warn('Could not save orb position:', e);
+          }
+        }, 500);
+      });
+    }
+  </script>
+</body>
+</html>
