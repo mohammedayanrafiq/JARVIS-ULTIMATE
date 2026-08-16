@@ -1,98 +1,154 @@
-# J.A.R.V.I.S — Persistent Windows Desktop Assistant (Tauri v2)
+# J.A.R.V.I.S Ultimate — Always-On Desktop AI Companion
 
-Welcome to the persistent Windows Desktop transformation for **J.A.R.V.I.S**. This setup wraps your existing single-file JARVIS application with a Rust-powered Tauri shell, creating a floating desktop orb widget, system tray integration, offline voice wake-word listening, expressive human voice speech synthesis, and cross-session task memory persistence.
+> **The floating orb that never leaves your screen.**  
+> Talk to it anytime. It listens. It answers with real expression. It remembers.
+
+This is not another chatbot in a browser tab.  
+This is **J.A.R.V.I.S Ultimate** — a true Windows desktop presence powered by Tauri v2 + Rust.
+
+A glowing sci-fi orb lives permanently on your desktop.  
+It stays always-on-top. You can drag it anywhere.  
+Say **“Jarvis”** and it wakes up, glows, expands, and talks back with natural, expressive voice.
+
+Built by **Mohammed Ayan Rafiq** (13) — AI Builder & Teenpreneur.
 
 ---
 
-## 📁 Complete Updated File Tree
+## Why this version feels different
+
+- **Always visible floating Orb** — never buried under windows
+- **Wake-word listening** that actually works offline in the background
+- **Expressive human-like voice** with dynamic pitch, rate & emotion
+- **Persistent memory** across sessions (it remembers what you were working on)
+- **System-level control** (open apps, volume, screenshots, files, commands)
+- **Global hotkey** `Ctrl + Shift + J` from anywhere
+- **System tray + auto-start** so it feels like a real OS citizen
+
+This is the closest thing to having Tony Stark’s J.A.R.V.I.S living on your Windows PC right now.
+
+---
+
+## Feature Highlights
+
+### The Floating Orb
+- Transparent, always-on-top, 64–80 px glowing orb
+- Drag it anywhere — position is saved forever
+- Click → expands the full JARVIS interface next to it
+- Listening state = intense cyan/green pulse + faster ring animation
+- Looks premium and sci-fi (logo.png / icon.png assets included)
+
+### Voice That Actually Feels Alive
+- Continuous offline wake-word detection (“Jarvis”)
+- When triggered: orb glows, main window appears, greets you
+- Expressive TTS with natural inflection (not robotic)
+- You can talk to it anytime without clicking anything
+
+### Memory & Context
+- Saves active task + conversation history in `%APPDATA%/jarvis/`
+- Ask “What were we working on?” → it tells you exactly
+
+### Real Desktop Power
+- Open any installed app
+- Run shell commands (with safety confirmation for destructive ones)
+- Read/write files
+- Control system volume
+- Take desktop screenshots
+- Native Windows notifications
+
+### Developer Experience
+- Clean Tauri v2 multi-window architecture
+- Rust backend for performance + security
+- Easy to extend with more commands
+
+---
+
+## Project Structure
 
 ```
-jarvis ultimate/
-├── package.json                  # Added Tauri scripts & devDependencies
-├── README.md                     # Setup, usage & architecture guide
+JARVIS-ULTIMATE/
+├── package.json
+├── README.md
 ├── assets/
-│   ├── icon.png                  # Main application icon
-│   └── logo.png                  # Glowing sci-fi orb logo asset
+│   ├── icon.png          # App & tray icon
+│   └── logo.png          # Glowing orb logo
 ├── src/
-│   ├── index.html                # Original JARVIS UI (CONFIG_VERSION=5 + Tauri Bridge)
-│   └── orb.html                  # Floating Orb desktop widget UI
+│   ├── index.html        # Full JARVIS chat UI + Tauri bridge
+│   └── orb.html          # Floating always-on-top orb widget
 └── src-tauri/
-    ├── Cargo.toml                # Rust dependencies (tauri, winapi, cpal, screenshots, open)
-    ├── tauri.conf.json           # Tauri v2 multi-window, system tray, hotkeys & autostart config
-    ├── build.rs                  # Standard Tauri build script
+    ├── Cargo.toml
+    ├── tauri.conf.json
+    ├── build.rs
     └── src/
-        ├── main.rs               # Desktop application entry point
-        ├── lib.rs                # App setup, tray events, global shortcut Ctrl+Shift+J
-        ├── commands.rs           # OS commands (open app, run command, FS, volume, screenshot)
-        ├── voice.rs              # Continuous offline wake-word listener ("Jarvis")
-        └── storage.rs            # Persistent JSON storage (%APPDATA%/jarvis/orb_position.json & task_memory.json)
+        ├── main.rs
+        ├── lib.rs                # Tray, global shortcut, orb restore, voice start
+        ├── commands.rs           # All OS-level commands
+        ├── voice.rs              # Continuous wake-word listener
+        └── storage.rs            # Persistent orb position + task memory
 ```
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
-1. **Node.js** (v18 or higher)
-2. **Rust Toolchain**: Install via [rustup.rs](https://rustup.rs/) (`stable-x86_64-pc-windows-msvc`).
-3. **C++ Build Tools**: Visual Studio Build Tools with "Desktop development with C++" workload installed.
+1. **Node.js** v18+
+2. **Rust** (stable-x86_64-pc-windows-msvc) → https://rustup.rs
+3. **Visual Studio Build Tools** with “Desktop development with C++”
 
 ---
 
-## 🚀 How to Run & Build
+## Quick Start
 
-### 1. Install Node Dependencies
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-### 2. Launch Development Mode
-Run the development environment. This compiles the Rust backend and opens the floating desktop orb overlay along with the main JARVIS UI:
-```bash
+# 2. Run in development (orb + main window appear)
 npm run tauri:dev
-```
 
-### 3. Build Standalone Executable / Installer (.exe / .msi)
-To generate the production Windows binary:
-```bash
+# 3. Build real Windows installer
 npm run tauri:build
 ```
-The output `.exe` / `.msi` installers will be located in:
-`src-tauri/target/release/bundle/`
+
+Output will be in `src-tauri/target/release/bundle/`
 
 ---
 
-## 🔮 How the Floating Orb & Key Features Work
+## How to Use Once Running
 
-### 1. Always-On-Top Floating Orb Overlay
-- **Continuous Desktop Presence**: The orb appears on your screen as a 64x64 transparent circular widget. It stays **always-on-top**, floating over any open browser tab, game, or software application.
-- **Draggable Everywhere**: Click and drag the orb anywhere on your monitor. Its exact `(X, Y)` position is saved persistently in `%APPDATA%/jarvis/orb_position.json` across system restarts.
-- **Expand / Collapse**: Click or tap the orb at any time to smoothly expand or hide the full JARVIS chat interface anchored near the orb.
+- The **orb** appears immediately and stays on top
+- Drag it wherever you want
+- Say **“Jarvis”** or press `Ctrl + Shift + J` or click the orb
+- Talk naturally — it listens and replies with expression
+- Close the main window → it goes to system tray (doesn’t quit)
+- Right-click tray icon for Show/Hide / Settings / Quit
 
-### 2. System Tray & Auto-Start
-- Closing the main chat window hides it to the Windows system tray (near the clock) rather than quitting.
-- Right-click the system tray icon to access:
-  - **Show/Hide J.A.R.V.I.S**
-  - **Settings**
-  - **Quit**
-- Auto-start on Windows startup is managed via `tauri-plugin-autostart`.
+---
 
-### 3. Global Hotkey (`Ctrl+Shift+J`)
-- Press `Ctrl+Shift+J` from anywhere on Windows (even when another app is focused) to immediately toggle the JARVIS interface.
+## Screenshots & Assets
 
-### 4. Continuous Offline Voice Wake-Word ("Jarvis")
-- The Rust audio thread monitors your microphone continuously.
-- When you speak **"Jarvis"**, the orb glows intensely in cyan/green, expands the chat UI, greets you with *"Yes Boss? I am listening."*, and automatically triggers speech recognition.
+All the premium screenshots (chat interface, voice mode, lock screen, calculators, food scanner, vitals, etc.) are kept in the root of the repo so the GitHub page looks rich and professional.
 
-### 5. Persistent Task Memory
-- Whenever you work with JARVIS, your queries, active tasks, and context are saved into `%APPDATA%/jarvis/task_memory.json`.
-- If you ask: **"Yes Jarvis, what were we working on?"**, JARVIS automatically recalls the saved task state from app data and tells you exactly what you were working on!
+The new floating orb uses the high-quality `assets/logo.png` and `assets/icon.png`.
 
-### 6. Human-like Expressive Voice
-- Speech synthesis uses natural voice selection with dynamic inflection tuning (adjusting pitch, rate, and stress based on question/statement structure) for a human-like computer voice.
+---
 
-### 7. OS-Level Control Commands (`window.jarvisDesktop`)
-- Open Installed App: `window.jarvisDesktop.openApp("notepad")`
-- Run Shell Command: `window.jarvisDesktop.runCommand("dir")` *(Prompts confirmation for destructive commands like `del` / `rm`)*
-- Read / Write Files: `window.jarvisDesktop.readUserFile(path)`, `window.jarvisDesktop.writeUserFile(path, content)`
-- System Volume: `window.jarvisDesktop.setVolume(0.8)`
-- Desktop Screenshot: `window.jarvisDesktop.takeScreenshot()`
+## Built By
+
+**Mohammed Ayan Rafiq**  
+13-year-old AI Builder & Teenpreneur  
+Breaking things, reverse-engineering, and shipping real AI tools.
+
+Contact: ayanimranrafiq@gmail.com  
+Phone: +91 9742515282 (IND)
+
+---
+
+## License
+
+MIT — feel free to fork, improve, and make your own personal J.A.R.V.I.S even better.
+
+---
+
+**This is the version that finally feels alive.**  
+An orb that never leaves. A voice that answers with presence.  
+Welcome to the future of personal AI on the desktop.
